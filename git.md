@@ -50,7 +50,7 @@
 
 
 
-## 三.建立本地仓库
+## 三.建立本地仓库并连接远程仓库
 
 + 打开需要建立本地仓库的文件夹
 
@@ -58,10 +58,20 @@
 
 
 
-## 四.本地仓库上传
+## 四.git相关操作
+
++ 上传文件
 
 > ```git
 > git add .   //.代表所有文件,可以替换成具体文件
 > git commit -m "intro"   //intro为此次上传说明，可替换
+> git push -u origin main   //上传到github
+>```
+
+
+
++ 还原文件(至上次提交状态)
+
+> ```git
+> git checkout HEAD filename   //filename为需要还原的文件名
 > ```
->
