@@ -82,4 +82,5 @@
 
 > ```git
 > git push origin master -f   //强行本地覆盖
+> git pull origin master --allow-unrelated-histories //不建议此方法
 > ```
