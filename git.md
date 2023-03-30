@@ -81,5 +81,5 @@
 + 本地和远程仓库存在不同开始点无法提交
 
 > ```git
-> git pull origin master --allow-unrelated-histories
+> git push origin master -f   //强行本地覆盖
 > ```
