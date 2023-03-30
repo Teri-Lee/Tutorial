@@ -75,3 +75,11 @@
 > ```git
 > git checkout HEAD filename   //filename为需要还原的文件名
 > ```
+
+
+
++ 本地和远程仓库存在不同开始点无法提交
+
+> ```git
+> git pull origin master --allow-unrelated-histories
+> ```
