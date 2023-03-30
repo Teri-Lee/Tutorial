@@ -84,3 +84,9 @@
 > git push origin master -f   //强行本地覆盖
 > git pull origin master --allow-unrelated-histories //不建议此方法
 > ```
+
+
+
++ 仓库所有者不同无法上传
+
+> [点击此链接查看解决方法](https://blog.csdn.net/tcjy1000/article/details/127129224)
