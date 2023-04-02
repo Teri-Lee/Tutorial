@@ -4,23 +4,24 @@
 
 ### 1.组件
 
-
-
 #### 1.1 表单组件
 
->**1.1 基础**
->
+##### 1.1.1 基础
+
 >```html
 ><form @submit="onSubmit"></form>	//提交表单
 >```
 >
 >```script
->onSubmit(e){}		//提交函数(注意e为提交的内容)
+>onSubmit(e){...}		//提交函数(注意e为提交的内容)
 >```
 >
 
->**2.1 button**
->
+##### 1.1.2相关组件
+
+###### 1. button
+
+
 >1. form-type:
 >
 >+ reset:点击重置
@@ -41,8 +42,8 @@
 
 #### 1.2 媒体组件
 
-> **1.image**
->
+##### 1.image
+
 > 1. src:
 >
 > + ==../==表示上一个文件夹(相对路径)
@@ -50,7 +51,7 @@
 > 2. mode:
 >
 > + aspectfill:保持短边缩放，裁剪长边
-> + aspectFit:保持长边缩放，无裁剪
+>+ aspectFit:保持长边缩放，无裁剪
 
 
 
@@ -108,59 +109,78 @@
 
 ## 二.uniCloud
 
-### 1.前端调用API
+### 1.云函数/云对象
 
->```script
->uniCloud.callFunction({
->        name:"Fun_name",		//后端定义的函数名
->        data:{				//传到API的数据，一般为对象
->             detail:detail	//当属性和值相等时，可简写为detail
->        }
->}).then(res=>{
->        console.log(res)
->})
->```
->
+#### 1.1 云对象
 
+##### 1.创建云对象
 
-
-### 2.后端定义API
-
-#### 2.1 exports外部
-
->**1.连接数据库**
->
 >```uniCloud
->const db=uniCloud.database()
+>const db=uniCloud.database();	//连接数据库
+>module.exports = {
+>	_before: function () { // 通用预处理器
+>
+>	},
+>	async Fun1(num){		//常规方法定义函数(类似云函数)
+>		return await db.collection("database").get();
+>	}，
+>	Fun2:async()=>{		//箭头函数方法定义函数
+>		await db.collection("database").get()
+>	}
+>}
 >```
 
+##### 2.调用云对象
 
-
-#### 2.2 exports内部
-
-> **1.读取数据库**
->
-> ```uniCloud
-> return await db.collection("database").get();
+> ```uniCLoud
+> const cloudObj=uniCloud.importObject("cloudObj")//定义在script内最外层
+> cloudObj.Fun().then(res=>{...})		//调用云对象内具体函数(同云函数)
 > ```
 
-> **2. 数据库添加**
->
+
+
+#### 1.2 云函数
+
+##### 1.2.1创建云函数
+
 > ```uniCloud
-> let {detail}=event;   //前端读取的数据
+>const db=uniCloud.database();
+> exports.main = async (event, context) => {
+> 	return await db.collection("database").get();
+> };
+> ```
 > 
-> return await db.collection("article").add({	//内接对象{}
->     posttime:Date.now(),
->     ...detail	//对象解构为一条一条的属性，搭配{}增加其他属性并重构对象
+
+##### 1.2.2调用云函数
+
+> ```uniCloud
+> uniCloud.callFunction({
+>    name:"Fun_name",		//后端定义的函数名
+>    data:{				//传到API的数据，一般为对象
+>         detail:detail	//当属性和值相等时，可简写为detail
+>    }
+> }).then(res=>{
+>    console.log(res)
 > })
 > ```
->
+
+##### 1.2.3数据库操作
+
+###### 1.数据库添加
+
+> ```uniCloud
+>let {object}=event;   //前端读取的数据,多条数据用,隔开
+> 
+> return await db.collection("database").add({	//内接对象{}
+>   posttime:Date.now(),
+>   ...object	//对象解构为一条一条的属性，搭配{}增加其他属性并重构对象
+>    })
+>    ```
+> 
 
 
 
-
-
-### 3.云存储
+### 2.云存储
 
 
 
@@ -221,6 +241,8 @@
 > border-bottom: 1rpx solid #eee;	//下划线
 > border: 1rpx solid #eee 		//边界线
 > ```
+
+
 
 ### 2.常见问题
 
