@@ -57,24 +57,59 @@
 
 ### 2.API
 
-#### 2.1 路由
+#### 2.1 通用参数
+
+>+ success/fail/complete
+>
+>```uniapp
+>uccess: res=>{}
+>```
+
+
+
+#### 2.2 路由
 
 > **1. uni.navigateTo**:保留当前页，跳转到其他页面，可返回
 > **2. uni.redirectTo**:关闭当前页，跳转到其他页面，不可返回
 > **3. uni.relaunch**:关闭所有页，跳转到其他页面，不可返回
+
+>+ url(上面三个API通用参数)
 >
-> 1. url:
+>```uniapp
+>url:`/pages/detail/detail?var1=${value1}&var2=${value2}
+>```
+
+
+
+#### 2.3 交互
+
+##### 1.uni.showToast
+
+>+ title:显示文本
+>+ icon:图标(success/error/fail/exception/loading/none(不显示))
+>+ mask:是否防止触摸穿透
+>+ duration:持续时间，单位毫秒
+
+> + 捕捉异常
 >
 > ```uniapp
-> url:`/pages/detail/detail?var1=${value1}&var2=${value2}`
+> Fun(){}.then(res=>{
+> 	uni.showToast({			//调用成功
+> 		icon:"success"
+> 	})
+> }).catch(err=>{
+> 	uni.showToast({			//捕获失败
+> 		title:err.message,
+> 		icon:"none"
+> 	})
+> })
 > ```
->
-> 2. success/fail/complete
->
-> ```uniapp
-> success: res=>{}
-> ```
->
+
+##### 2.uni.hideToast
+
+> + 隐藏消息提示框
+
+
 
 
 
@@ -180,7 +215,45 @@
 
 
 
-### 2.云存储
+### 2.云数据库
+
+#### 2.1 DB Schema
+
+##### 2.1.1 required
+
+> ```DB Schema
+> "required": ["keyword"] //必填字段，常搭配errorMessage
+> ```
+
+##### 2.1.2 permission
+
+> + 前端非admin权限，默认为false
+
+##### 2.1.3 properties
+
+>+ **“bsonType”**:字段类型
+>
+>+ **“title”**:标题
+>
+>+ **“discription”**:描述
+>
+>+ **“errorMessage”**:错误信息
+>
+>+ **“trim”:**去除空白字符(仅对string有效)
+>
+>	​	1.none:不去除(默认)
+>
+>	​	2.both/start/end:去除位置
+>
+>+ **”defaultValue”(非强制)/“forceDefaultValue”(强制)**:默认值，下面列举几个特殊对象默认值
+>
+>	​	1.timestamp：{“$env”:”now”}	//时间戳
+
+
+
+
+
+### 3.云存储
 
 
 
