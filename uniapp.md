@@ -4,7 +4,42 @@
 
 ### 1.组件
 
-#### 1.1 媒体组件
+
+
+#### 1.1 表单组件
+
+>**1.1 基础**
+>
+>```html
+><form @submit="onSubmit"></form>	//提交表单
+>```
+>
+>```script
+>onSubmit(e){}		//提交函数(注意e为提交的内容)
+>```
+>
+
+>**2.1 button**
+>
+>1. form-type:
+>
+>+ reset:点击重置
+>+ submit:点击提交(常搭配1.1)
+>
+>2. size:
+>
+>+ default:常规大小
+>+ mini:小尺寸
+>
+>3. type:
+>
+>+ primary:不同平台不同颜色
+>+ default:白色
+>+ warn:红色
+
+
+
+#### 1.2 媒体组件
 
 > **1.image**
 >
@@ -36,7 +71,7 @@
 > 2. success/fail/complete
 >
 > ```uniapp
-> success: function(res) {}
+> success: res=>{}
 > ```
 >
 
@@ -44,7 +79,7 @@
 
 ### 3.格式
 
-#### 1.template
+#### 3.1 template
 
 > 1. 初始化或更改值均使用=====
 > 2. 在<view>等标签内，变量不为num类型时需要写在==“”==内
@@ -53,16 +88,81 @@
 
 
 
-#### 2.script
+#### 3.2 script
 
 > 1. data(){},onload(){},methods{}(后面称这些为**不同区域**)等之间要使用==,==隔开
+>
 > 2. 不同区域间相互引用要使用==this.==隔开,template中则不需要使用
+>
 > 3. 区域内部可使用==,==或==;==隔开
-> 4. 区域内初始化使用==:==,更改值使用=====
+>
+> 4. 区域内赋值的三种情况:
+>
+> 	4.1 **data中初定义** / **官方函数需要赋初值的参数(url等)**赋初值，使用==:==
+>
+> 	4.2 **函数内自己定义但之前未声明过的参数**赋初值，使用==let var1 = var2==
+>
+> 	4.3 更改值(被更改的变量已经有初值)，使用=====
 
 
 
 ## 二.uniCloud
+
+### 1.前端调用API
+
+>```script
+>uniCloud.callFunction({
+>        name:"Fun_name",		//后端定义的函数名
+>        data:{				//传到API的数据，一般为对象
+>             detail:detail	//当属性和值相等时，可简写为detail
+>        }
+>}).then(res=>{
+>        console.log(res)
+>})
+>```
+>
+
+
+
+### 2.后端定义API
+
+#### 2.1 exports外部
+
+>**1.连接数据库**
+>
+>```uniCloud
+>const db=uniCloud.database()
+>```
+
+
+
+#### 2.2 exports内部
+
+> **1.读取数据库**
+>
+> ```uniCloud
+> return await db.collection("database").get();
+> ```
+
+> **2. 数据库添加**
+>
+> ```uniCloud
+> let {detail}=event;   //前端读取的数据
+> 
+> return await db.collection("article").add({	//内接对象{}
+>     posttime:Date.now(),
+>     ...detail	//对象解构为一条一条的属性，搭配{}增加其他属性并重构对象
+> })
+> ```
+>
+
+
+
+
+
+### 3.云存储
+
+
 
 
 
