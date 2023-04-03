@@ -40,6 +40,21 @@
 
 
 
+###### 2. input
+
+>1. type:
+>
+>+ text/number/digit:文本/数字/带小数数字
+>+ idcard/tel/safe-password：身份证/电话/安全密码输入键盘
+>
+>2. name：
+>
+>+ 提交后的名称(必填)
+>
+>3. placeholder
+>
+>+ 预输入内容
+
 #### 1.2 媒体组件
 
 ##### 1.image
@@ -127,7 +142,7 @@
 > 1. data(){},onload(){},methods{}(后面称这些为**不同区域**)等之间要使用==,==隔开
 > 2. 不同区域间相互引用要使用==this.==隔开,template中则不需要使用
 > 3. ==“”==嵌套使用则最外面的需要修改为==‘’==
-> 4. 区域内部可使用==,==或==;==隔开
+> 4. 区域内部使用==,==或==;==隔开(==,==表示子句分隔，==;==表示语句终结)
 > 5. 区域内赋值的三种情况:
 >
 >    5.1 **data中初定义** / **官方函数需要赋初值的参数(url等)**赋初值，使用==:==
@@ -214,7 +229,7 @@
 ##### 2.1.1 required
 
 > ```DB Schema
-> "required": ["keyword"] //必填字段，常搭配errorMessage
+> "required": ["keyword"] //必填字段，常搭配2.1.3 中的errorMessage
 > ```
 
 ##### 2.1.2 permission
@@ -229,7 +244,7 @@
 >
 >+ **“discription”**:描述
 >
->+ **“errorMessage”**:错误信息
+>+ **“errorMessage”**:错误信息(常搭配2.1.1 required)
 >
 >+ **“trim”:**去除空白字符(仅对string有效)
 >
@@ -237,9 +252,11 @@
 >
 >	​	2.both/start/end:去除位置
 >
->+ **”defaultValue”(非强制)/“forceDefaultValue”(强制)**:默认值，下面列举几个特殊对象默认值
+>+ **”defaultValue”(非强制)/“forceDefaultValue”(强制)**:默认值，下面列举几个特殊**对象**默认值
 >
 >	​	1.timestamp：{“$env”:”now”}	//时间戳
+>	
+>	​	2.userId：{“$env”:”uid”}	//userId可换成其他名字,属性为string
 
 
 
