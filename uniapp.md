@@ -46,7 +46,7 @@
 
 > 1. src:
 >
-> + ==../==表示上一个文件夹(相对路径)
+> + 具体格式见本章3.2.6
 >
 > 2. mode:
 >
@@ -73,11 +73,9 @@
 > **2. uni.redirectTo**:关闭当前页，跳转到其他页面，不可返回
 > **3. uni.relaunch**:关闭所有页，跳转到其他页面，不可返回
 
->+ url(上面三个API通用参数)
+>1. url(此为上面三个API通用参数)：
 >
->```uniapp
->url:`/pages/detail/detail?var1=${value1}&var2=${value2}
->```
+>+ 具体格式见本章3.2.6
 
 
 
@@ -127,20 +125,26 @@
 #### 3.2 JS
 
 > 1. data(){},onload(){},methods{}(后面称这些为**不同区域**)等之间要使用==,==隔开
->
 > 2. 不同区域间相互引用要使用==this.==隔开,template中则不需要使用
->
 > 3. ==“”==嵌套使用则最外面的需要修改为==‘’==
->
 > 4. 区域内部可使用==,==或==;==隔开
->
 > 5. 区域内赋值的三种情况:
 >
->   4.1 **data中初定义** / **官方函数需要赋初值的参数(url等)**赋初值，使用==:==
+>    5.1 **data中初定义** / **官方函数需要赋初值的参数(url等)**赋初值，使用==:==
 >
->   4.2 **函数内自己定义但之前未声明过的参数**赋初值，使用==let var1 = var2==
+>    5.2 **函数内自己定义但之前未声明过的参数**赋初值，使用==let var1 = var2==
 >
->   4.3 更改值(被更改的变量已经有初值)，使用=====
+>    5.3 更改值(被更改的变量已经有初值)，使用=====
+>
+> 6. url/src:
+>
+> 	6.1 相对路径(相对于当前文件所在文件夹位置)：==../==表示上一个文件夹(相对路径)
+>
+> 	6.2 绝对路径:"/uni_modules/uni-id-pages/pages/userinfo/userinfo"//page.json时复制前方加上==/==
+>
+> 	6.3 带参数:`/pages/detail/detail?cid=${e.classid}&id=${e.id}` //两端为==``==(反引号)
+
+
 
 
 
@@ -275,6 +279,20 @@
 ### 3.云存储
 
 
+
+### 4.uni-id
+
+#### 4.1 初始配置
+
+> 1. 前往[uni-id-pages - DCloud 插件市场](https://ext.dcloud.net.cn/plugin?name=uni-id-pages)导入插件
+>
+> 2. 在uniCloud/cloudfunctions/common/uni-config-center路径下创建uni-id/config.json
+> 3. 前往[uni-id云端配置说明](https://uniapp.dcloud.net.cn/uniCloud/uni-id-summary.html#config)复制config.json
+> 4. 删除config.json中的注释(替换-正则匹配-==//.+==-全部替换)
+> 5. 配置config.json:
+>
+> + “passwordSecret”:用于加密密码入库的密钥,要求长字符串(此项需手动添加)
+> + “tokenSecret”:生成token需要的密钥,要求长字符串
 
 
 
