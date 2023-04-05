@@ -161,7 +161,11 @@
 
 
 
+3.3 VUE
 
+>1. v-bind:缩写==:==,在绑定prop或者用变量动态赋值时需要使用
+>
+>
 
 ## 二.uniCloud
 
@@ -235,6 +239,8 @@
 ##### 2.1.2 permission
 
 > + 前端非admin权限，默认为false
+> + “auth.uid!=null”  //只有登录才有权限
+> + “doc.userId==auth.uid”  //操作对应的表与操作用户为同一人
 
 ##### 2.1.3 properties
 
@@ -277,7 +283,7 @@
 ##### 2.修改
 
 > ```JQL
-> db.collection("database").doc("_id").update({var:value})
+> db.collection("database").doc("_id").update({var:value})	//doc一般接唯一标识符"_id
 > db.collection("database").where("age>25 && age<40").update({arr: {1: "uniCloud"}})
 > //数组可直接使用下标
 > ```
@@ -287,6 +293,48 @@
 > ```JQL
 > db.collection("database").doc("_id").remove()
 > db.collection("database").where('name=="Lee"').remove()
+> ```
+
+##### 4.联表查询
+
+> ```JQL
+> //联表查询一定要在第一张表内设置foreignKey
+> 
+> //缩略写法(不要求长期存在可用let代替const)
+> const database1=db.collection('database1').where('_id=="1"').getTemp() //第一张表按FK查询
+> const res=await db.collection(database1,'database2').get()	//联表查询
+> 
+> //完整写法(获取所求表所有内容再拼接，由于权限问题往往需要字段过滤)
+> const database1=db.collection('database1').getTemp()
+> const database2=db.collection('database2').getTemp()
+> db.collection(database1,database2).get().then(res=>{...})
+> ```
+
+##### 5.字段过滤
+
+> ```JQL
+> //foreignKey在不同表名称不一样，建议参考Schema
+> const database1=db.collection('database1').filed("FK,var1...").getTemp()
+> const database2=db.collection('database2').field("Fk,var2...").getTemp()
+> db.collection(database1,database2).get().then(res=>{...})
+> 
+> //别名，之后渲染都使用别名varname
+> const database1=db.collection('database1').filed("FK,var1 as varname...").getTemp()
+> ```
+>
+
+##### 6.排序
+
+>```JQL
+>//按照quantity字段升序排序，quantity相同时按照create_date降序排序
+>.orderBy('quantity asc, create_date desc')
+>```
+
+##### 7.限制查询条数
+
+> ```JQL
+> .limit(num)//limit限制一条或多条记录，结果为对象组成的数组，
+> .get({getone:true})//getone只查询一条记录，结果为对象
 > ```
 
 
@@ -310,6 +358,34 @@
 >
 > + “passwordSecret”:用于加密密码入库的密钥,要求长字符串(此项需手动添加)
 > + “tokenSecret”:生成token需要的密钥,要求长字符串
+
+#### 4.2 数据库绑定
+
+>```JS
+>"userId":{		//在表的properties下添加该字段
+>    "bsonType": "string",
+>    "title": "用户Id",
+>    "foreignKey": "uni-id-users._id",
+>    "defaultValue":{
+>        "$env": "uid"
+>    }
+>}
+>```
+
+#### 4.3 用户登出
+
+> ```JS
+> import {mutations} from "../../uni_modules/uni-id-pages/common/store.js"
+> //引入JS文件，logout函数就在这个文件里
+> mutations.logout()
+> //调用logout函数；如果想要修改logout函数(如注销后的登录界面)，去store.js修改
+> ```
+
+#### 4.4 权限更改
+
+>
+>
+>
 
 
 
