@@ -124,11 +124,25 @@
 
 
 
+### 3.全局文件
 
+#### 3.1 pages.json页面路由
 
-### 3.格式
+##### 3.1.1 tabBar
 
-#### 3.1 html
+>1. color：tab上的文字默认颜色
+>2. selectedColor：tab 上的文字选中时的颜色
+>3. backgroundColor：tab 的背景色
+>4. list：
+>
+>+ pagePath：页面路径，必须在 pages 中先定义
+>+ text：tab 上按钮文字
+>+ iconPath：图片路径
+>+ selectedIconPath：选中时的图片路径
+
+### 4.格式
+
+#### 4.1 html
 
 > 1. 初始化或更改值均使用=====
 > 2. 在<view>等标签内，变量不为num类型时需要写在==“”==内
@@ -137,7 +151,7 @@
 
 
 
-#### 3.2 JS
+#### 4.2 JS
 
 > 1. data(){},onload(){},methods{}(后面称这些为**不同区域**)等之间要使用==,==隔开
 > 2. 不同区域间相互引用要使用==this.==隔开,template中则不需要使用
@@ -161,7 +175,7 @@
 
 
 
-3.3 VUE
+#### 4.3 VUE
 
 >1. v-bind:缩写==:==,在绑定prop或者用变量动态赋值时需要使用
 >
@@ -336,6 +350,41 @@
 > .limit(num)//limit限制一条或多条记录，结果为对象组成的数组，
 > .get({getone:true})//getone只查询一条记录，结果为对象
 > ```
+
+##### 8.云端环境变量
+
+> 1. $cloudEnv_uid:当前用户uid，依赖uni-id
+> 2. $cloudEnv_now:服务器时间戳
+> 3. $cloudEnv_clientIP:当前客户端IP
+
+
+
+#### 2.3 unicloud-db组件
+
+##### 1.基本格式
+
+> ```html
+> <unicloud-db v-slot:default="{data, loading, error, options}" 
+>  collection="database" field="field1" :getone="true" where="id=='1'">
+>     <view v-if="error">{{error.message}}</view>
+>     <view v-else-if="loading">数据加载中</view>
+>     <view v-else>{{data}}</view>
+> </unicloud-db>
+> ```
+
+##### 2.联表查询
+
+> ```html
+> //var1为database1里的属性，var2为database里的属性
+> <unicloud-db v-slot:default="{data, loading, error, options}"
+>  collection="database1,database2" field="var1,FK.var2"></unicloud-db>
+> ```
+
+##### 3.loadtime
+
+>
+>
+>
 
 
 
