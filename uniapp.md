@@ -55,6 +55,54 @@
 >
 >+ 预输入内容
 
+
+
+###### 3. editor
+
+>1. show-img-size:
+>
+>+ 点击图片时显示图片大小控件
+>
+>2. show-img-toolbar：
+>
+>+ 点击图片时显示工具栏控件
+>
+>3. show-img-resize
+>
+>+ 点击图片时显示修改尺寸控件
+>
+>4. @ready="onEditReady":(名字不可改)
+>
+>+ 编辑器初始化完成时触发引号内方法
+>
+>5. @focus="onFocus"(引号内部为方法，需要在methods内定义，名字不可改)
+>
+>+ 编辑器聚焦时触发引号内方法
+
+
+>+ onEditReady具体定义
+>
+> ```uniapp
+> onEditReady(){
+> uni.createSelectorQuery().in(this).select('.myEdit').fields({
+>         size:true,
+>         context:true
+>     },res=>{
+>         console.log(res);
+>         this.editorCtx=res.context
+>     }).exec()
+>     }
+> ```
+> 
+
+>+ this.editorCtx.format("name","value")
+>
+>1. name:富文本样式
+>2. value：具体值，如果没有可不写
+>3. 具体参数见[editorContext | uni-app官网 (dcloud.net.cn)](https://uniapp.dcloud.net.cn/api/media/editor-context.html#)
+
+
+
 #### 1.2 媒体组件
 
 ##### 1.image
@@ -67,6 +115,15 @@
 >
 > + aspectfill:保持短边缩放，裁剪长边
 >+ aspectFit:保持长边缩放，无裁剪
+
+
+
+#### 1.3 VUE组件
+
+##### 1.component
+
+>1. 项目根目录下创建`components`目录，在目录内新建组件(scss模板，创建同级目录)
+>2. 
 
 
 
@@ -139,6 +196,8 @@
 >+ text：tab 上按钮文字
 >+ iconPath：图片路径
 >+ selectedIconPath：选中时的图片路径
+
+
 
 ### 4.格式
 
@@ -493,6 +552,27 @@
 > border-bottom: 1rpx solid #eee;	//下划线
 > border: 1rpx solid #eee 		//边界线
 > ```
+
+
+
+#### 1.5 修改层级
+
+> ```css
+> z-index: 100;	//显示在最上层
+> ```
+
+
+
+#### 1.6 点击显示样式
+
+>
+
+#### 1.6 iconfont字体库
+
+>1. [iconfont官网](https://www.iconfont.cn/)找到我的项目并下载解压，留下iconfont文件(除后缀名为json)
+>2. 在App.vue文件<style>中添加`@import "@/static/fonts/iconfont.cs"`
+>3. 修改iconfont.css文件最上方的url，添加`@/static/fonts/`
+>4. 在需要的地方使用`class="iconfont iconname"`(修改样式时用`.iconfont{font-size=50rpx}`)
 
 
 
