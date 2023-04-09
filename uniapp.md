@@ -84,14 +84,14 @@
 >
 > ```uniapp
 > onEditReady(){
-> uni.createSelectorQuery().in(this).select('.myEdit').fields({
+> 	uni.createSelectorQuery().in(this).select('.myEdit').fields({
 >         size:true,
 >         context:true
 >     },res=>{
 >         console.log(res);
 >         this.editorCtx=res.context
 >     }).exec()
->     }
+> }
 > ```
 > 
 
@@ -100,6 +100,19 @@
 >1. name:富文本样式
 >2. value：具体值，如果没有可不写
 >3. 具体参数见[editorContext | uni-app官网 (dcloud.net.cn)](https://uniapp.dcloud.net.cn/api/media/editor-context.html#)
+
+> + editorContext.insertImage({})
+>
+> 1. src：图片地址，仅支持 http(s)、base64、本地图片
+> 2. alt：图像无法显示时的替代文本
+> 3. 其他一些参数及插入函数见[editorContext | uni-app官网 (dcloud.net.cn)](https://uniapp.dcloud.net.cn/api/media/editor-context.html#)
+
+>+ editorContext.getContents({})
+>
+>1. 获取富文本内容
+>2. 具体参数及其他获取函数见[editorContext | uni-app官网 (dcloud.net.cn)](https://uniapp.dcloud.net.cn/api/media/editor-context.html#)
+
+
 
 
 
@@ -134,12 +147,12 @@
 >+ success/fail/complete
 >
 >```uniapp
->uccess: res=>{}
+>success: res=>{}
 >```
 
 
 
-#### 2.2 路由
+#### 2.2 页面和路由
 
 > **1. uni.navigateTo**:保留当前页，跳转到其他页面，可返回
 > **2. uni.redirectTo**:关闭当前页，跳转到其他页面，不可返回
@@ -181,6 +194,14 @@
 
 
 
+#### 2.4 媒体
+
+##### 1.uni.chooseImage
+
+>+ 返回参数为tempFiles(Object类型，具有属性name,path)
+
+
+
 ### 3.全局文件
 
 #### 3.1 pages.json页面路由
@@ -206,39 +227,51 @@
 > 1. 初始化或更改值均使用=====
 > 2. 在<view>等标签内，变量不为num类型时需要写在==“”==内
 > 3. 在<view>等标签外，变量需要写在=={{}}==内
-> 4. v-for需要绑定使用==:key==
 
 
 
 #### 4.2 JS
 
 > 1. data(){},onload(){},methods{}(后面称这些为**不同区域**)等之间要使用==,==隔开
+>
 > 2. 不同区域间相互引用要使用==this.==隔开,template中则不需要使用
+>
 > 3. ==“”==嵌套使用则最外面的需要修改为==‘’==
+>
 > 4. 区域内部使用==,==或==;==隔开(==,==表示子句分隔，==;==表示语句终结)
-> 5. 区域内赋值的三种情况:
 >
->    5.1 **data中初定义** / **官方函数需要赋初值的参数(url等)**赋初值，使用==:==
+> 5. 引入JS文件的函数：
 >
->    5.2 **函数内自己定义但之前未声明过的参数**赋初值，使用==let var1 = var2==
+> 	+ `import {funName} from "fileUrl"`
 >
->    5.3 更改值(被更改的变量已经有初值)，使用=====
+> 6. 区域内赋值的三种情况:
 >
-> 6. url/src:
+>    + **data中初定义** / **官方函数需要赋初值的参数(url等)**赋初值，使用==:==
 >
-> 	6.1 相对路径(相对于当前文件所在文件夹位置)：==../==表示上一个文件夹(相对路径)
+>    + **函数内自己定义但之前未声明过的参数**赋初值，使用==let var1 = var2==
 >
-> 	6.2 绝对路径:"/uni_modules/uni-id-pages/pages/userinfo/userinfo"//page.json时复制前方加上==/==
+>    + 更改值(被更改的变量已经有初值)，使用=====
 >
-> 	6.3 带参数:`/pages/detail/detail?cid=${e.classid}&id=${e.id}` //两端为==``==(反引号)
+> 7. url/src:
+>
+>   + 相对路径(相对于当前文件所在文件夹位置)：==../==表示上一个文件夹(相对路径)
+>
+>   + 绝对路径:`"/uni_modules/uni-id-pages/pages/userinfo/userinfo"`//page.json时复制前方加上==/==
+>
+>   + 带参数:`/pages/detail/detail?cid=${e.classid}&id=${e.id}` //两端为==``==(反引号)
 
 
 
 #### 4.3 VUE
 
->1. v-bind:缩写==:==,在绑定prop或者用变量动态赋值时需要使用
+>1. v-bind: 缩写==:==,在绑定prop或者用变量动态赋值时需要使用
 >
->
+>2. v-model：v-model=“data”,对表单和数据进行双向绑定，表单不需要提交即可更改数据
+>3. v-for: 需要绑定使用==:key==
+
+
+
+
 
 ## 二.uniCloud
 
@@ -451,7 +484,14 @@
 
 ### 3.云存储
 
+#### 3.1 uploadFile
 
+> + uploadFile({Object})
+> + Object属性：
+> 	1. filePath：上传的文件地址
+> 	2. cloudPath：云端文件名
+>
+> + 返回属性：FileID，用于访问文件，建议储存
 
 ### 4.uni-id
 
@@ -565,7 +605,16 @@
 
 #### 1.6 点击显示样式
 
+>```css
+>&.active{	//CSS写好点击后的样式
+>    color:#FB7299
+>}
+>```
 >
+>```html
+>:class="condition ? 'active' : ''"
+>//在标签使用上述表达式并添加点击事件，在点击事件内修改condition
+>```
 
 #### 1.6 iconfont字体库
 
