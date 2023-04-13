@@ -238,6 +238,20 @@
 >+ iconPath：图片路径
 >+ selectedIconPath：选中时的图片路径
 
+##### 3.1.2 uniIDRouter
+
+> ```JS
+> "uniIdRouter": {
+>     "loginPage": "pages/index/index", // 登录页面路径
+>     "needLogin": [
+>         "pages/detail/.*" // 需要登录才可访问的页面列表，可以使用正则语法
+>     ],
+>     "resToLogin": true // 自动解析云对象及clientDB的错误码，如果是客户端token不正确或token过期则自动跳转配置的登录页面，配置为false则关闭此行为，默认true
+> }
+> ```
+>
+> 
+
 
 
 ### 4.格式
@@ -304,7 +318,7 @@
 
 >1. v-bind: 缩写==:==,在绑定prop或者用变量动态赋值时需要使用
 >
->2. v-model：v-model=“data”,对表单和数据进行双向绑定，表单不需要提交即可更改数据
+>2. v-model：v-model=“data”,对表单和数据进行双向绑定，表单不需要提交即可更改数据，`v-model.`后可以接类型
 >3. v-for: 需要绑定使用==:key==；v-for=“(item,index) in List”,此时index为数组序号
 
 
@@ -531,6 +545,64 @@
 >
 > + 返回属性：FileID，用于访问文件，建议储存
 
+
+
+#### 3.2 uni-file-picker
+
+> + 更多参数见[uni-file-picker文档](https://uniapp.dcloud.net.cn/component/uniui/uni-file-picker.html#)
+
+> ```html
+> <uni-file-picker 
+> 	v-model="imageValue" 
+> 	fileMediatype="image" //限制上传类型
+>        :limit="1"	//上传数量
+> 	mode="grid" 
+>        ref="files"	//通过ref调用upload方法自行选择上传时机
+>  	:auto-upload="false"	//关闭自动上传
+> 	@select="select" //这些函数不需要可以不写，否则会报错
+> 	@progress="progress" 
+> 	@success="success" 
+> 	@fail="fail" 
+> />
+> <button @click="clickUpload">上传文件</button>
+> <script>
+> 	export default {
+> 		data() {
+> 			return {
+> 				imageValue:[]
+> 			}
+> 		},
+> 		methods:{
+>             //上传文件
+>             clickUpload(){
+>                 this.$refs.files.upload()
+>             }
+> 			// 获取上传状态
+> 			select(e){
+> 				console.log('选择文件：',e)
+> 			},
+> 			// 获取上传进度
+> 			progress(e){
+> 				console.log('上传进度：',e)
+> 			},
+> 			
+> 			// 上传成功
+> 			success(e){
+> 				console.log('上传成功')
+> 			},
+> 			
+> 			// 上传失败
+> 			fail(e){
+> 				console.log('上传失败：',e)
+> 			}
+> 		}
+> 	}
+> </script>
+> 
+> ```
+
+
+
 ### 4.uni-id
 
 #### 4.1 初始配置
@@ -558,20 +630,102 @@
 >}
 >```
 
-#### 4.3 用户登出
 
-> ```JS
-> import {mutations} from "../../uni_modules/uni-id-pages/common/store.js"
-> //引入JS文件，logout函数就在这个文件里
-> mutations.logout()
-> //调用logout函数；如果想要修改logout函数(如注销后的登录界面)，去store.js修改
-> ```
 
-#### 4.4 权限更改
+#### 4.3 用户登录
 
+>1. 引入store.js
+>
+>	```JS
+>	import {
+>	store,
+>	mutations
+>	} from '@/uni_modules/uni-id-pages/common/store.js'
+>	```
+>
+>2. 添加computed属性
+>
+>	```JS
+>	computed:{
+>	    userInfo() {
+>	        return store.userInfo
+>	    },
+>	    hasLogin(){
+>	        return store.hasLogin
+>	    }
+>	}
+>	```
+>
+>	3. 配置uniIDRouter
+
+#### 4.4 用户登出
+
+>1. 引入store.js就调用
+>
+>	```JS
+>	import {mutations} from "@/uni_modules/uni-id-pages/common/store.js"
+>	mutations.logout() //调用logout函数
+>	```
+>
+>2. 修改(按情况，本项目需要)
+>
+>	+ logout函数
+>
+>	```JS
+>	uni.redirectTo({
+>	    url: `/${pagesJson.uniIdRouter?.loginPage ?? 'pages/self/self'}`,
+>	});
+>	```
+>	
+>	+ updateUserInfo函数
+>	
+>	```JS
+>	let res = await usersTable.where("'_id' == $cloudEnv_uid")			.field('mobile,nickname,username,email,avatar_file,register_date')
+>	.get()
+>	```
+>	
+>	
 >
 >
 >
+
+#### 4.5 多端角色管理
+
+>1. 在uniCloud/cloudfunctions/common/uni-config-center/uni-id路径下创建hooks/index.js
+>
+>2. 修改index.js内容为
+>
+>	```JS
+>	// 钩子函数示例 hooks/index.js
+>									
+>	function beforeRegister({
+>	  userRecord,
+>	  clientInfo
+>	} = {}) {
+>	  if(clientInfo.appId === 'AppID') {	//manifest.json中可查看
+>	    if(userRecord.role) {
+>	      userRecord.role.push('roleName')	//在uni-admin中创建
+>	    } else {
+>	      userRecord.role = ['roleName']
+>	    }
+>	  }
+>	  return userRecord // 务必返回处理后的userRecord
+>	}
+>									
+>	module.exports = {
+>	  beforeRegister
+>	}
+>	```
+>
+>	
+
+
+
+### 5.uni-admin
+
+>1. 新建项目，选择模板uni-admin，并关联云服务空间
+>2. 右键选择关联云服务空间，并点击绑定其他项目的服务空间
+>3. 右键选择移动至关联云服务空间
 
 
 
@@ -654,10 +808,39 @@
 >//在标签使用上述表达式并添加点击事件，在点击事件内修改condition
 >```
 
-#### 1.6 iconfont字体库
+#### 1.7 背景高斯模糊
+
+> ```CSS
+> position: absolute;
+> top: 0;
+> left:0;
+> width: 100%;
+> height: 100%;
+> overflow: hidden;
+> image{
+>     width: 100%;
+>     height: 100%;
+>     filter: blur(20px);
+>     transform: scale(2);
+>     opacity: 0.5;
+> }
+> ```
+
+
+
+#### 1.8 盒子接触部分两端圆角
+
+>```css
+>border-radius: 30rpx;
+>transform:translateY(-30rpx);//参数与border-radius的参数保持一致
+>```
+
+
+
+#### 1.9 iconfont字体库
 
 >1. [iconfont官网](https://www.iconfont.cn/)找到我的项目并下载解压，留下iconfont文件(除后缀名为json)
->2. 在App.vue文件<style>中添加`@import "@/static/fonts/iconfont.cs"`
+>2. 在App.vue文件<style>中添加`@import "@/static/fonts/iconfont.css"`
 >3. 修改iconfont.css文件最上方的url，添加`@/static/fonts/`
 >4. 在需要的地方使用`class="iconfont iconname"`(修改样式时用`.iconfont{font-size=50rpx}`)
 
@@ -667,6 +850,8 @@
 
 #### 2.1 图像类
 
+##### 1.图像显示溢出/盒子边界
+
 > + 图像显示溢出/盒子边界
 >
 > ```css
@@ -675,6 +860,12 @@
 >     height:100%;
 >     box-sizing: border-box;//可写在全局
 > }
+> ```
+
+##### 2.系统状态栏压住盒子
+
+> ```CSS
+> padding-top:var(--status-bar-height);
 > ```
 
 
